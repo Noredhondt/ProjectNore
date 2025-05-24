@@ -1,0 +1,16 @@
+body {
+    font-family: Arial;
+    margin: 30px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    margin-top: 15px;
+  }
+  
+  label {
+    display: block;
+    margin: 5px 0;
+  }
+  
+  
