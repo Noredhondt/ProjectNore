@@ -1,16 +1,22 @@
 body {
-    font-family: Arial;
-    margin: 30px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    margin-top: 15px;
-  }
-  
-  label {
-    display: block;
-    margin: 5px 0;
-  }
-  
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+.question {
+  margin-bottom: 1.5rem;
+}
+.options label {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+#result {
+  margin-top: 2rem;
+  font-weight: bold;
+}
+
   

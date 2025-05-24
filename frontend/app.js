@@ -1,56 +1,103 @@
-const questions = [
-    { text: "Wat beschrijft je het best?", options: { a: "Creatief en kalm", b: "Gedreven en rebels", c: "Sociaal en speels", d: "Energiek en levendig" } },
-    { text: "Wat doe je op een festival?", options: { a: "Chillen en luisteren", b: "Headbangen", c: "Dansen en zingen", d: "Springen op beats" } },
-    { text: "Wat is je favoriete moment?", options: { a: "Zonsondergang met muziek", b: "Donkere tent met harde muziek", c: "Zomeravond met vrienden", d: "Nachtelijke rave" } },
-  ];
-  
-  let currentQuestion = 0;
-  const answers = [];
-  
-  const quizDiv = document.getElementById("quiz");
-  const nextBtn = document.getElementById("nextBtn");
-  const resultDiv = document.getElementById("result");
-  
-  function showQuestion(index) {
-    const q = questions[index];
-    let html = `<p>${q.text}</p>`;
-    for (let key in q.options) {
-      html += `<label><input type="radio" name="answer" value="${key}" /> ${q.options[key]}</label><br>`;
+const apiBase = 'http://localhost:3001/api';
+
+
+async function fetchQuestions() {
+  console.log("🔄 Ophalen van vragen...");
+  const res = await fetch(`${apiBase}/questions`);
+  const data = await res.json();
+  console.log("✅ Gevonden vragen:", data); // <-- Belangrijk!
+  return data;
+}
+
+async function fetchOptions(questionId) {
+  console.log(`🔄 Ophalen van opties voor vraag ${questionId}...`);
+  const res = await fetch(`${apiBase}/questions/${questionId}/options`);
+  const data = await res.json();
+  console.log(`✅ Opties voor vraag ${questionId}:`, data); // <-- Belangrijk!
+  return data;
+}
+
+
+
+async function buildQuiz() {
+  const form = document.getElementById('quiz-form');
+  form.innerHTML = '';
+
+  const questions = await fetchQuestions();
+
+  for (const question of questions) {
+    const options = await fetchOptions(question.id);
+
+    const qDiv = document.createElement('div');
+    qDiv.className = 'question';
+
+    const qTitle = document.createElement('h3');
+    qTitle.textContent = question.text;
+    qDiv.appendChild(qTitle);
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'options';
+
+    for (const opt of options) {
+      const label = document.createElement('label');
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = `q${question.id}`;
+      radio.value = opt.answer_value;
+      label.appendChild(radio);
+      label.append(opt.text);
+      optsDiv.appendChild(label);
     }
-    quizDiv.innerHTML = html;
+
+    qDiv.appendChild(optsDiv);
+    form.appendChild(qDiv);
   }
-  
-  nextBtn.addEventListener("click", () => {
-    const selected = document.querySelector('input[name="answer"]:checked');
-    if (!selected) {
-      alert("Kies een antwoord.");
+}
+
+async function submitAnswers() {
+  const form = document.getElementById('quiz-form');
+  const answers = [];
+
+  // Verzamel gekozen antwoorden per vraag
+  const questions = await fetchQuestions();
+
+  for (const question of questions) {
+    const selected = form.querySelector(`input[name="q${question.id}"]:checked`);
+    if (selected) {
+      answers.push(selected.value);
+    } else {
+      alert('Beantwoord alle vragen aub!');
       return;
     }
-    answers.push(selected.value);
-    currentQuestion++;
-    if (currentQuestion < questions.length) {
-      showQuestion(currentQuestion);
-    } else {
-      const personality = determinePersonality(answers);
-      fetch("http://localhost:3000/api/recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: personality })
-      })
-        .then(res => res.json())
-        .then(data => {
-          resultDiv.innerHTML = `<h2>Jouw aanbevelingen:</h2><ul>${data.genres.map(g => `<li>${g}</li>`).join('')}</ul>`;
-          quizDiv.innerHTML = "";
-          nextBtn.style.display = "none";
-        });
-    }
-  });
-  
-  function determinePersonality(answers) {
-    const counts = { a: 0, b: 0, c: 0, d: 0 };
-    answers.forEach(a => counts[a]++);
-    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
   }
-  
-  showQuestion(currentQuestion);
+
+  // Verstuur antwoorden naar server
+  const res = await fetch(`${apiBase}/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ answers })
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    alert('Fout: ' + (err.error || 'Onbekende fout'));
+    return;
+  }
+
+  const data = await res.json();
+
+  // Toon resultaat
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = `<h2>Jouw persoonlijkheidstype:</h2>
+    <p><strong>${data.personalityType.name}</strong></p>
+    <p>${data.personalityType.description}</p>`;
+}
+
+document.getElementById('submit-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  submitAnswers();
+});
+
+buildQuiz();
+
   
