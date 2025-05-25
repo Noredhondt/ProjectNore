@@ -45,7 +45,7 @@ app.get('/api/questions/:id/options', (req, res) => {
   );
 });
 
-// Route: Verwerk quiz antwoorden en bepaal persoonlijkheidstype
+// Route: Verwerk quiz antwoorden en bepaal persoonlijkheidstype + line-up
 app.post('/api/submit', (req, res) => {
   const answers = req.body.answers;
 
@@ -72,6 +72,7 @@ app.post('/api/submit', (req, res) => {
   const codeToPersonalityId = { a: 1, b: 2, c: 3, d: 4 };
   const personalityId = codeToPersonalityId[maxCode];
 
+  // Stap 1: Haal persoonlijkheidstype op
   db.get('SELECT * FROM PersonalityType WHERE id = ?', [personalityId], (err, row) => {
     if (err) {
       return res.status(500).json({ error: 'Database fout' });
@@ -79,13 +80,33 @@ app.post('/api/submit', (req, res) => {
     if (!row) {
       return res.status(404).json({ error: 'Persoonlijkheidstype niet gevonden' });
     }
-    res.json({ personalityType: {
-      name: row.naam, 
-      description: row.omschrijving
-    } 
-  });
+
+    // Stap 2: Haal lineup op
+    db.all(
+      `SELECT Artist.naam AS artist, Stage.naam AS stage, Lineup.day
+       FROM Lineup
+       JOIN Artist ON Lineup.artist_id = Artist.id
+       JOIN Stage ON Lineup.stage_id = Stage.id
+       WHERE Lineup.personality_type_id = ?`,
+      [personalityId],
+      (err2, lineup) => {
+        if (err2) {
+          console.error("Lineup-query fout:", err2); // voeg dit toe voor debug
+          return res.status(500).json({ error: err2.message });
+        }
+    
+        res.json({
+          personalityType: {
+            name: row.naam,
+            description: row.omschrijving,
+            lineup: lineup }
+        });
+      }
+    );
+
   });
 });
+
 
 // Server starten
 app.listen(PORT, () => {

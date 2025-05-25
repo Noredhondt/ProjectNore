@@ -86,11 +86,19 @@ async function submitAnswers() {
 
   const data = await res.json();
 
-  // Toon resultaat
-  const resultDiv = document.getElementById('result');
-  resultDiv.innerHTML = `<h2>Jouw persoonlijkheidstype:</h2>
-    <p><strong>${data.personalityType.name}</strong></p>
-    <p>${data.personalityType.description}</p>`;
+// Bouw HTML voor lineup
+const lineupHtml = data.personalityType.lineup.map(item =>
+  `<li><strong>${item.artist}</strong> – ${item.stage} (${item.day})</li>`
+).join('');
+
+// Toon resultaat
+const resultDiv = document.getElementById('result');
+resultDiv.innerHTML = `<h2>Jouw persoonlijkheidstype:</h2>
+  <p><strong>${data.personalityType.name}</strong></p>
+  <p>${data.personalityType.description}</p>
+  <h3>🎶 Jouw aanbevolen line-up:</h3>
+  <ul>${lineupHtml}</ul>`;
+
 }
 
 document.getElementById('submit-btn').addEventListener('click', (e) => {
