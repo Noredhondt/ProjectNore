@@ -79,7 +79,11 @@ app.post('/api/submit', (req, res) => {
     if (!row) {
       return res.status(404).json({ error: 'Persoonlijkheidstype niet gevonden' });
     }
-    res.json({ personalityType: row });
+    res.json({ personalityType: {
+      name: row.naam, 
+      description: row.omschrijving
+    } 
+  });
   });
 });
 
