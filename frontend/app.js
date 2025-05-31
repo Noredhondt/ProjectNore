@@ -93,11 +93,13 @@ const lineupHtml = data.personalityType.lineup.map(item =>
 
 // Toon resultaat
 const resultDiv = document.getElementById('result');
-resultDiv.innerHTML = `<h2>Jouw persoonlijkheidstype:</h2>
-  <p><strong>${data.personalityType.name}</strong></p>
+resultDiv.innerHTML = `
+  <h2 class='result-titel'>
+    Jouw persoonlijkheidstype: <span class="result-naam">${data.personalityType.name}</span>
+  </h2>
   <p>${data.personalityType.description}</p>
-  <h3>🎶 Jouw aanbevolen line-up:</h3>
-  <ul>${lineupHtml}</ul>`;
+  <h3 class='lineup-titel'> Jouw aanbevolen line-up:</h3>
+  <ul class='opsomming-lineup'>${lineupHtml}</ul>`;
 
 }
 

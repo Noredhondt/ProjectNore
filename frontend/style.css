@@ -2,21 +2,67 @@ body {
   font-family: Arial, sans-serif;
   max-width: 600px;
   margin: 2rem auto;
+  background-color: #EDE9DD; 
 }
-.question {
+
+h1 {
+  text-transform: uppercase;
+}
+
+.roze {
+  color: #F88A8A; 
+}
+
+.rood {
+  color: #883936;
+}
+
+.question { 
   margin-bottom: 1.5rem;
+}
+.question h3 {
+  color: #883936; 
 }
 .options label {
   display: block;
   margin-bottom: 0.3rem;
+  color: #000; 
 }
+
+.options input[type="radio"] {
+  margin-right: 0.5rem; 
+  cursor: pointer; 
+}
+
 button {
   padding: 0.5rem 1rem;
   font-size: 1rem;
 }
-#result {
-  margin-top: 2rem;
-  font-weight: bold;
+
+#submit-btn {
+  margin-top: 2rem; 
+    border-radius: 10px;
+    border: 3px solid #883936;
+    background-color: #EDE9DD;
+    cursor: pointer; 
 }
 
-  
+.result-titel {
+  color: #883936;
+}
+
+.result-naam {
+  color: #F88A8A;
+}
+
+.lineup-titel {
+  color:#883936; 
+}
+
+.opsomming-lineup li {
+  margin-top: 0.8rem;
+}
+
+
+
+
