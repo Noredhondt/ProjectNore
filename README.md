@@ -9,6 +9,10 @@ Dit project is een webapplicatie die gepersonaliseerde muziekaanbevelingen doet 
 - Gepersonaliseerde lijst met festivalacts en muziekgenres
 - Overzichtelijke en gebruiksvriendelijke webinterface
 
+## Links
+- figma: https://www.figma.com/design/Xy9sMpCsQ4PKDSYhJrQkaU/muziek-personalitetisquiz?node-id=8-3&m=dev
+- 
+
 ## Gebruikte technologieën
 
 **Frontend:**
