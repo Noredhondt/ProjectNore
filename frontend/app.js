@@ -86,10 +86,52 @@ async function submitAnswers() {
 
   const data = await res.json();
 
-// Bouw HTML voor lineup
+  
+// html voor lineup NIEUW gesorteerd
+const dagVolgorde = {
+  'vrijdag': 1,
+  'zaterdag': 2,
+  'zondag': 3
+};
+
+const lineupSorted = data.personalityType.lineup.slice().sort((a, b) => {
+  if (dagVolgorde[a.day.toLowerCase()] !== dagVolgorde[b.day.toLowerCase()]) {
+    return dagVolgorde[a.day.toLowerCase()] - dagVolgorde[b.day.toLowerCase()];
+  }
+  if (a.artist.toLowerCase() !== b.artist.toLowerCase()) {
+    return a.artist.toLowerCase().localeCompare(b.artist.toLowerCase());
+  }
+  return a.stage.toLowerCase().localeCompare(b.stage.toLowerCase());
+});
+
+// Groepeer per dag
+const lineupByDay = lineupSorted.reduce((acc, item) => {
+  const dag = item.day;
+  if (!acc[dag]) acc[dag] = [];
+  acc[dag].push(item);
+  return acc;
+}, {});
+
+// Bouw HTML met dag-koppen
+let lineupHtml = '';
+for (const dag of ['vrijdag', 'zaterdag', 'zondag']) {
+  if (lineupByDay[dag]) {
+    lineupHtml += `<h4>${dag.charAt(0).toUpperCase() + dag.slice(1)}</h4><ul>`;
+    for (const item of lineupByDay[dag]) {
+      lineupHtml += `<li><span class="artist-name">${item.artist}</span> – ${item.stage}</li>`;
+    }
+    lineupHtml += '</ul>';
+  }
+}
+  
+
+
+
+/* Bouw HTML voor lineup
 const lineupHtml = data.personalityType.lineup.map(item =>
   `<li><strong>${item.artist}</strong> – ${item.stage} (${item.day})</li>`
-).join('');
+).join(''); */
+
 
 // Toon resultaat
 const resultDiv = document.getElementById('result');
@@ -97,10 +139,11 @@ resultDiv.innerHTML = `
   <h2 class='result-titel'>
     Jouw persoonlijkheidstype: <span class="result-naam">${data.personalityType.name}</span>
   </h2>
-  <p>${data.personalityType.description}</p>
+  <p> Jouw muziekdimensie: ${data.personalityType.musicDimension} </p> 
+  ${data.personalityType.description}
   <h3 class='lineup-titel'> Jouw aanbevolen line-up:</h3>
-  <ul class='opsomming-lineup'>${lineupHtml}</ul>`;
-
+  ${lineupHtml}
+`;
 }
 
 document.getElementById('submit-btn').addEventListener('click', (e) => {
@@ -110,4 +153,3 @@ document.getElementById('submit-btn').addEventListener('click', (e) => {
 
 buildQuiz();
 
-  

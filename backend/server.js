@@ -14,11 +14,11 @@ const db = new sqlite3.Database('/Users/noredhondt/Documents/Postgraduaat/Projec
   if (err) {
     console.error('Fout bij verbinden met database:', err.message);
   } else {
-    console.log('✅ Verbonden met SQLite database');
+    console.log(' Verbonden met SQLite database');
   }
 });
 
-// ✅ Route: Alle vragen ophalen (met kolom 'tekst')
+//  Route: Alle vragen ophalen (met kolom 'tekst')
 app.get('/api/questions', (req, res) => {
   db.all('SELECT id, tekst AS text FROM Question', [], (err, rows) => {
     if (err) {
@@ -29,7 +29,7 @@ app.get('/api/questions', (req, res) => {
   });
 });
 
-// ✅ Route: Antwoordopties voor een specifieke vraag (met kolommen 'code' en 'tekst')
+// Route: Antwoordopties voor een specifieke vraag (met kolommen 'code' en 'tekst')
 app.get('/api/questions/:id/options', (req, res) => {
   const questionId = req.params.id;
   db.all(
@@ -97,7 +97,8 @@ app.post('/api/submit', (req, res) => {
     
         res.json({
           personalityType: {
-            name: row.naam,
+            name: row.persoonlijkheidsType,
+            musicDimension: row.muziek_dimensie, 
             description: row.omschrijving,
             lineup: lineup }
         });
@@ -110,7 +111,7 @@ app.post('/api/submit', (req, res) => {
 
 // Server starten
 app.listen(PORT, () => {
-  console.log(`🚀 Server draait op http://localhost:${PORT}`);
+  console.log(`Server draait op http://localhost:${PORT}`);
 });
 
 
