@@ -2,10 +2,10 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 
+// Middleware
 const app = express();
 const PORT = 3001;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -47,6 +47,7 @@ app.get('/api/questions/:id/options', (req, res) => {
 
 // Route: Verwerk quiz antwoorden en bepaal persoonlijkheidstype + line-up
 app.post('/api/submit', (req, res) => {
+  console.log('Inkomende data op /api/submit:', req.body);
   const answers = req.body.answers;
 
   if (!answers || !Array.isArray(answers) || answers.length === 0) {
@@ -94,7 +95,10 @@ app.post('/api/submit', (req, res) => {
           console.error("Lineup-query fout:", err2); // voeg dit toe voor debug
           return res.status(500).json({ error: err2.message });
         }
-    
+
+        console.log(" Personality ID:", personalityId);
+        console.log(" Line-up resultaat:", lineup);
+
         res.json({
           personalityType: {
             name: row.persoonlijkheidsType,

@@ -70,6 +70,8 @@ async function submitAnswers() {
       return;
     }
   }
+    // Log van de antwoorden hier:
+    console.log("Antwoorden:", answers);
 
   // Verstuur antwoorden naar server
   const res = await fetch(`${apiBase}/submit`, {
@@ -106,7 +108,7 @@ const lineupSorted = data.personalityType.lineup.slice().sort((a, b) => {
 
 // Groepeer per dag
 const lineupByDay = lineupSorted.reduce((acc, item) => {
-  const dag = item.day;
+  const dag = item.day.toLowerCase(); 
   if (!acc[dag]) acc[dag] = [];
   acc[dag].push(item);
   return acc;
@@ -126,13 +128,6 @@ for (const dag of ['vrijdag', 'zaterdag', 'zondag']) {
   
 
 
-
-/* Bouw HTML voor lineup
-const lineupHtml = data.personalityType.lineup.map(item =>
-  `<li><strong>${item.artist}</strong> – ${item.stage} (${item.day})</li>`
-).join(''); */
-
-
 // Toon resultaat
 const resultDiv = document.getElementById('result');
 resultDiv.innerHTML = `
@@ -148,7 +143,10 @@ resultDiv.innerHTML = `
 
 document.getElementById('submit-btn').addEventListener('click', (e) => {
   e.preventDefault();
+  // ter controle (console.log)
+  console.log("Submit-knop werd geklikt");
   submitAnswers();
+  
 });
 
 buildQuiz();
