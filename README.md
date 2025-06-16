@@ -39,9 +39,9 @@ Dit project is een webapplicatie die gepersonaliseerde muziekaanbevelingen doet 
 | Doel            | Library/tool           |
 | --------------- | ---------------------- |
 | Server          | Express (Node.js)      |
-| Database        | Sequelize / Mongoose   |
-| Frontend logica | Axios (voor API calls) |
-| Styling         | Bootstrap / Tailwind   |
+| Database        | sqlite3 
+| Frontend logica | Native Fetch API |
+| Styling         | Zelfgeschreven CSS  |
 
 
 
